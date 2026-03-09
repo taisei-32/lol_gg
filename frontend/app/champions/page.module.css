@@ -1,0 +1,12 @@
+.th {
+    padding: 12px;
+    text-align: left;
+    cursor: pointer;
+    user-select: none;
+    border-bottom: 2px solid #ccc;
+}
+
+.td {
+    padding: 8px 12px;
+    vertical-align: middle;
+}
