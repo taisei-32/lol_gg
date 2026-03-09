@@ -1,0 +1,184 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Rajdhani:wght@300;400;500;600&display=swap');
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #080808;
+  font-family: 'Rajdhani', sans-serif;
+  color: #e0e0e0;
+}
+
+/* NAV */
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  padding: 18px 48px;
+  border-bottom: 1px solid rgba(109,40,217,0.5);
+  background: #7c3aed;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.navLogo {
+  font-family: 'Cinzel', serif;
+  font-size: 20px;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: 0.15em;
+  text-decoration: none;
+}
+
+.navLogo span {
+  color: #7c3aed;
+}
+
+.navLinks {
+  display: flex;
+  gap: 4px;
+  margin-left: 8px;
+}
+
+.navLink {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+  text-decoration: none;
+  padding: 6px 14px;
+  border-radius: 3px;
+  transition: all 0.2s;
+}
+
+.navLink:hover {
+  color: #ffffff;
+  background: rgba(124,58,237,0.15);
+}
+
+/* HERO */
+.hero {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 24px;
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 0%, rgba(124,58,237,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 20% 80%, rgba(109,40,217,0.06) 0%, transparent 50%),
+    #080808;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(124,58,237,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124,58,237,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black, transparent);
+  pointer-events: none;
+}
+
+.title {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(52px, 9vw, 100px);
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: 0.05em;
+  line-height: 1;
+  margin-bottom: 10px;
+  text-shadow: 0 0 60px rgba(124,58,237,0.4);
+}
+
+.title span {
+  color: #7c3aed;
+  text-shadow: 0 0 40px rgba(124,58,237,0.7);
+}
+
+.sub {
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.35em;
+  color: rgba(255,255,255,0.25);
+  text-transform: uppercase;
+  margin-bottom: 52px;
+}
+
+/* SEARCH */
+.searchWrapper {
+  width: 100%;
+  max-width: 540px;
+  position: relative;
+  z-index: 1;
+}
+
+.searchBox {
+  display: flex;
+  align-items: center;
+  background: #111111;
+  border: 1px solid rgba(124,58,237,0.4);
+  border-radius: 4px;
+  overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.searchBox:focus-within {
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 3px rgba(124,58,237,0.1), 0 0 30px rgba(124,58,237,0.08);
+}
+
+.searchInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: #ffffff;
+  padding: 15px 18px;
+  letter-spacing: 0.05em;
+}
+
+.searchInput::placeholder {
+  color: rgba(255,255,255,0.2);
+  font-weight: 300;
+}
+
+.searchBtn {
+  background: #7c3aed;
+  border: none;
+  color: #ffffff;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 15px 28px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.searchBtn:hover {
+  background: #6d28d9;
+}
+
+.searchHint {
+  margin-top: 10px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.2);
+  letter-spacing: 0.05em;
+  text-align: center;
+}
+
+.searchHint code {
+  color: rgba(124,58,237,0.7);
+  font-family: monospace;
+}
