@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -15,12 +16,10 @@ import (
 
 var db *sql.DB
 
-type Champion struct {
-	Key       int            `json:"key"`
-	ID        string         `json:"id"`
-	Name      string         `json:"name"`
-	ImageFull string         `json:"image_full"`
-	Tags      pq.StringArray `json:"tags"`
+type intArray []intArray
+
+func (a *intArray) Scan(src interface{}) error {
+	return pq.GenericArray{A: a}.Scan(src)
 }
 
 func getChampions(c *gin.Context) {
@@ -30,7 +29,6 @@ func getChampions(c *gin.Context) {
 		return
 	}
 	defer rows.Close()
-
 	var champions []Champion
 	for rows.Next() {
 		var champ Champion
@@ -56,6 +54,61 @@ func getVersion(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"version": version})
+}
+
+func getItems(c *gin.Context) {
+	rows, err := db.Query(`
+		SELECT
+			id, name, plaintext, description,
+			image_full,
+			gold_base, gold_total, gold_sell, gold_purchasable,
+			into_items, from_items,
+			tags, stats
+		FROM items
+		ORDER BY id
+	`)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	defer rows.Close()
+
+	var items []Item
+	for rows.Next() {
+		var item Item
+		var intoRaw, fromRaw []int64
+		var stats []byte
+
+		if err := rows.Scan(
+			&item.ID, &item.Name, &item.Plaintext, &item.Description,
+			&item.ImageFull,
+			&item.GoldBase, &item.GoldTotal, &item.GoldSell, &item.Purchasable,
+			pq.Array(&intoRaw), pq.Array(&fromRaw),
+			&item.Tags, &stats,
+		); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		// nil の場合は空スライスにする
+		if intoRaw == nil {
+			intoRaw = []int64{}
+		}
+		if fromRaw == nil {
+			fromRaw = []int64{}
+		}
+
+		item.IntoItems = intoRaw
+		item.FromItems = fromRaw
+		item.Stats = json.RawMessage(stats)
+		items = append(items, item)
+	}
+
+	if items == nil {
+		items = []Item{}
+	}
+
+	c.JSON(http.StatusOK, items)
 }
 
 func main() {
@@ -92,5 +145,6 @@ func main() {
 
 	r.GET("/api/version", getVersion)
 	r.GET("/api/champions", getChampions)
+	r.GET("/api/items", getItems)
 	r.Run(":8081")
 }

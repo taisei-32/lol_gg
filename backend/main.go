@@ -189,6 +189,23 @@ func getMatchDetail(matchID string) (*MatchDetail, error) {
 	return &match, nil
 }
 
+func getMatchDTimeline(matchID string) {
+	endpoint := fmt.Sprintf(
+		"https://asia.api.riotgames.com/lol/match/v5/matches/%s/timeline",
+		matchID,
+	)
+	body, err := callAPI(endpoint)
+	if err != nil {
+		return
+	}
+	var raw interface{}
+	err = json.Unmarshal(body, &raw)
+	if err != nil {
+		return
+	}
+	prettyPrint(raw)
+}
+
 func main() {
 	if err := godotenv.Load("../.env"); err != nil {
 		log.Fatal(".envが見つかりません")
@@ -243,6 +260,7 @@ func main() {
 
 		duration := match.Info.GameDuration / 60
 		fmt.Printf("\n[試合 %d] %s (%d分)\n", i+1, matchID, duration)
+		getMatchDTimeline(matchID)
 
 		for _, p := range match.Info.Participants {
 			if p.RiotIdGameName == account.GameName {

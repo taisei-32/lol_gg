@@ -47,3 +47,30 @@ type ChampionData struct {
 type dataDragonResponse struct {
 	Data map[string]ChampionData `json:"data"`
 }
+
+type ItemGold struct {
+	Base        int  `json:"base"`
+	Purchasable bool `json:"purchasable"`
+	Total       int  `json:"total"`
+	Sell        int  `json:"sell"`
+}
+
+type ItemImage struct {
+	Full string `json:"full"`
+}
+
+type ItemData struct {
+	Name        string             `json:"name"`
+	Plaintext   string             `json:"plaintext"`
+	Description string             `json:"description"`
+	Image       ItemImage          `json:"image"`
+	Gold        ItemGold           `json:"gold"`
+	Into        []string           `json:"into"`
+	From        []string           `json:"from"`
+	Tags        []string           `json:"tags"`
+	Stats       map[string]float64 `json:"stats"`
+}
+
+type itemDragonResponse struct {
+	Data map[string]ItemData `json:"data"`
+}

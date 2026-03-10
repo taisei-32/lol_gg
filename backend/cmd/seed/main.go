@@ -10,6 +10,7 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
+	"github.com/lib/pq"
 	_ "github.com/lib/pq"
 )
 
@@ -67,7 +68,6 @@ func getChampions() ([]ChampionData, string, error) {
 }
 
 func saveChampions(db *sql.DB, champions []ChampionData) error {
-	// テーブル作成
 	_, err := db.Exec(`
 		CREATE TABLE IF NOT EXISTS champions (
 			id                    VARCHAR(50) PRIMARY KEY,
@@ -199,6 +199,111 @@ func saveVersion(db *sql.DB, version string) error {
 	return nil
 }
 
+func getItems(version string) (map[string]ItemData, error) {
+	url := fmt.Sprintf(
+		"https://ddragon.leagueoflegends.com/cdn/%s/data/ja_JP/item.json",
+		version,
+	)
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, fmt.Errorf("アイテムデータ取得失敗: %v", err)
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	var ddResponse itemDragonResponse
+	if err = json.Unmarshal(body, &ddResponse); err != nil {
+		return nil, err
+	}
+	return ddResponse.Data, nil
+}
+
+func saveItems(db *sql.DB, items map[string]ItemData) error {
+	_, err := db.Exec(`
+        CREATE TABLE IF NOT EXISTS items (
+            id               INT PRIMARY KEY,
+            name             VARCHAR(500),
+            plaintext        VARCHAR(500),
+            description      TEXT,
+            image_full       VARCHAR(500),
+            gold_base        INT,
+            gold_total       INT,
+            gold_sell        INT,
+            gold_purchasable BOOLEAN,
+            into_items       INT[],
+            from_items       INT[],
+            tags             TEXT[],
+            stats            JSONB
+        )
+    `)
+	if err != nil {
+		return fmt.Errorf("テーブル作成失敗: %v", err)
+	}
+
+	for idStr, item := range items {
+		var id int
+		fmt.Sscanf(idStr, "%d", &id)
+
+		// into を []int に変換
+		intoIDs := make([]int, 0)
+		for _, s := range item.Into {
+			var n int
+			fmt.Sscanf(s, "%d", &n)
+			intoIDs = append(intoIDs, n)
+		}
+
+		// from を []int に変換
+		fromIDs := make([]int, 0)
+		for _, s := range item.From {
+			var n int
+			fmt.Sscanf(s, "%d", &n)
+			fromIDs = append(fromIDs, n)
+		}
+
+		// stats を JSONB 用に変換
+		statsJSON, err := json.Marshal(item.Stats)
+		if err != nil {
+			return fmt.Errorf("stats JSON変換失敗: %v", err)
+		}
+
+		_, err = db.Exec(`
+            INSERT INTO items (
+                id, name, plaintext, description,
+                image_full,
+                gold_base, gold_total, gold_sell, gold_purchasable,
+                into_items, from_items,
+                tags, stats
+            ) VALUES (
+                $1, $2, $3, $4,
+                $5,
+                $6, $7, $8, $9,
+                $10, $11,
+                $12, $13
+            )
+            ON CONFLICT (id) DO UPDATE SET
+                name = $2, plaintext = $3, description = $4,
+                image_full = $5,
+                gold_base = $6, gold_total = $7, gold_sell = $8, gold_purchasable = $9,
+                into_items = $10, from_items = $11,
+                tags = $12, stats = $13
+        `,
+			id, item.Name, item.Plaintext, item.Description,
+			item.Image.Full,
+			item.Gold.Base, item.Gold.Total, item.Gold.Sell, item.Gold.Purchasable,
+			pq.Array(intoIDs), pq.Array(fromIDs),
+			pq.Array(item.Tags), statsJSON,
+		)
+		if err != nil {
+			return fmt.Errorf("アイテム保存失敗 %s: %v", idStr, err)
+		}
+	}
+	return nil
+}
+
 func main() {
 	if err := godotenv.Load("../../../.env"); err != nil {
 		log.Fatal(".envが見つかりません")
@@ -238,4 +343,15 @@ func main() {
 		log.Fatalf("DB保存失敗: %v", err)
 	}
 	fmt.Println("チャンピオンデータの保存完了！")
+
+	items, err := getItems(version)
+	if err != nil {
+		log.Fatalf("アイテム取得失敗: %v", err)
+	}
+	fmt.Printf("アイテム数: %d\n", len(items))
+
+	if err = saveItems(db, items); err != nil {
+		log.Fatalf("アイテム保存失敗: %v", err)
+	}
+	fmt.Println("アイテムデータの保存完了！")
 }

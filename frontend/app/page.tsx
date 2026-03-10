@@ -25,7 +25,8 @@ export default function Home() {
           LOL
         </Link>
         <div className={styles.navLinks}>
-          <Link href="/champions" className={styles.navLink}>チャンピオン</Link>
+          <Link href="/champions-id" className={styles.navLink}>チャンピオン</Link>
+          <Link href="/items-id" className={styles.navLink}>アイテム</Link>
         </div>
       </nav>
 
