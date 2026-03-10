@@ -245,7 +245,7 @@ func main() {
 			fmt.Printf("勝率: %.1f%% (%dW / %dL)\n", winRate, r.Wins, r.Losses)
 		}
 	}
-	matchIDs, err := getMatchIDs(account.Puuid, 3)
+	matchIDs, err := getMatchIDs(account.Puuid, 1)
 	if err != nil {
 		log.Fatalf("マッチID取得失敗: %v", err)
 	}
