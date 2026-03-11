@@ -74,3 +74,24 @@ type ItemData struct {
 type itemDragonResponse struct {
 	Data map[string]ItemData `json:"data"`
 }
+
+type RuneSlot struct {
+	Runes []RuneData `json:"runes"`
+}
+
+type RuneStyleData struct {
+	ID    int        `json:"id"`
+	Key   string     `json:"key"`
+	Icon  string     `json:"icon"`
+	Name  string     `json:"name"`
+	Slots []RuneSlot `json:"slots"`
+}
+
+type RuneData struct {
+	ID        int    `json:"id"`
+	Key       string `json:"key"`
+	Icon      string `json:"icon"`
+	Name      string `json:"name"`
+	ShortDesc string `json:"shortDesc"`
+	LongDesc  string `json:"longDesc"`
+}

@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Rajdhani:wght@300;400;500;600&display=swap');
+
+.page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: #080808;
+    font-family: 'Rajdhani', sans-serif;
+    color: #e0e0e0;
+    overflow-x: auto;
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    padding: 18px 48px;
+    border-bottom: 1px solid rgba(109, 40, 217, 0.5);
+    background: #330066;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    flex-wrap: nowrap;
+    min-width: max-content;
+}
+
+.navLogo {
+    font-family: 'Cinzel', serif;
+    font-size: 20px;
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: 0.15em;
+    text-decoration: none;
+    flex-shrink: 0;
+}
+
+.navLinks {
+    display: flex;
+    gap: 4px;
+    margin-left: 8px;
+}
+
+.navLink {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.5);
+    text-decoration: none;
+    padding: 6px 14px;
+    border-radius: 3px;
+    transition: all 0.2s;
+}
+
+.navLink:hover {
+    color: #ffffff;
+    background: rgba(124, 58, 237, 0.15);
+}
+
+/* .navLinkActive {
+    color: #c084fc;
+    border-bottom: 2px solid #c084fc;
+} */
+
+.search {
+    flex: 1;
+    min-width: 220px;
+    max-width: 360px;
+    background: #111111;
+    border: 1px solid rgba(124, 58, 237, 0.4);
+    border-radius: 4px;
+    padding: 10px 16px;
+    color: #ffffff;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    margin-left: auto;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.search::placeholder {
+    color: rgba(255, 255, 255, 0.2);
+    font-weight: 300;
+}
+
+.search:focus {
+    border-color: #7c3aed;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+}

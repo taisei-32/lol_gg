@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import styles from "./page.module.css";
+import Nav from "@/components/Nav";
 
 type ItemData = {
     id: number;
@@ -66,7 +67,6 @@ export default function ItemsPage() {
         ]).then(([versionData, itemsData]) => {
             setVersion(versionData.version);
             const raw: ItemData[] = Array.isArray(itemsData) ? itemsData : [];
-            // DBに重複IDがある場合に備えてフロントで重複排除
             const seen = new Set<number>();
             const safeItems = raw.filter((item) => {
                 if (seen.has(item.id)) return false;
@@ -133,20 +133,11 @@ export default function ItemsPage() {
 
     return (
         <div className={styles.page}>
-            <nav className={styles.nav}>
-                <Link href="/" className={styles.navLogo}>LOL</Link>
-                <div className={styles.navLinks}>
-                    <Link href="/champions" className={styles.navLink}>チャンピオン</Link>
-                    <Link href="/items" className={styles.navLink}>アイテム</Link>
-                </div>
-                <input
-                    className={styles.search}
-                    type="text"
-                    placeholder="アイテム名・IDで検索..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                />
-            </nav>
+            <Nav
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                searchPlaceholder="チャンピオン名・IDで検索..."
+            />
 
             <div className={styles.container}>
                 <div className={styles.header}>
@@ -191,7 +182,6 @@ export default function ItemsPage() {
                                     );
                                     return (
                                         <tr key={`row-${item.id}-${rowIdx}`} id={`item-${item.id}`} className={styles.row}>
-                                            {/* KEY */}
                                             <td className={styles.td}>
                                                 <span className={styles.keyBadge}>{item.id}</span>
                                             </td>
@@ -227,7 +217,6 @@ export default function ItemsPage() {
                                                 </div>
                                             </td>
 
-                                            {/* 売値 */}
                                             <td className={styles.td}>
                                                 <span className={styles.goldSell}>
                                                     {item.gold_sell > 0 ? `${item.gold_sell}G` : "—"}

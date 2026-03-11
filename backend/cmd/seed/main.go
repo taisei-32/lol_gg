@@ -304,6 +304,87 @@ func saveItems(db *sql.DB, items map[string]ItemData) error {
 	return nil
 }
 
+func getRunes(version string) ([]RuneStyleData, error) {
+	url := fmt.Sprintf(
+		"https://ddragon.leagueoflegends.com/cdn/%s/data/ja_JP/runesReforged.json",
+		version,
+	)
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, fmt.Errorf("ルーンデータ取得失敗: %v", err)
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	var styles []RuneStyleData
+	err = json.Unmarshal(body, &styles)
+	if err != nil {
+		return nil, fmt.Errorf("ルーンJSONパース失敗: %v", err)
+	}
+	return styles, nil
+}
+
+func saveRunes(db *sql.DB, styles []RuneStyleData) error {
+	_, err := db.Exec(`
+		CREATE TABLE IF NOT EXISTS rune_styles (
+			id    INT PRIMARY KEY,
+			key   VARCHAR(50),
+			name  VARCHAR(50),
+			icon  VARCHAR(200)
+		)
+	`)
+	if err != nil {
+		return fmt.Errorf("rune_stylesテーブル作成失敗: %v", err)
+	}
+	_, err = db.Exec(`
+		CREATE TABLE IF NOT EXISTS runes (
+			id         INT PRIMARY KEY,
+			style_id   INT REFERENCES rune_styles(id),
+			slot       INT,
+			key        VARCHAR(100),
+			name       VARCHAR(100),
+			icon       VARCHAR(200),
+			short_desc TEXT,
+			long_desc  TEXT
+		)
+	`)
+	if err != nil {
+		return fmt.Errorf("runesテーブル作成失敗: %v", err)
+	}
+	for _, style := range styles {
+		_, err := db.Exec(`
+			INSERT INTO rune_styles (id, key, name, icon)
+			VALUES ($1, $2, $3, $4)
+			ON CONFLICT (id) DO UPDATE SET
+				key = $2, name = $3, icon = $4
+		`, style.ID, style.Key, style.Name, style.Icon)
+		if err != nil {
+			return fmt.Errorf("スタイル保存失敗 %s: %v", style.Key, err)
+		}
+
+		for slotIdx, slot := range style.Slots {
+			for _, rune := range slot.Runes {
+				_, err := db.Exec(`
+					INSERT INTO runes (id, style_id, slot, key, name, icon, short_desc, long_desc)
+					VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+					ON CONFLICT (id) DO UPDATE SET
+						style_id = $2, slot = $3, key = $4, name = $5,
+						icon = $6, short_desc = $7, long_desc = $8
+				`, rune.ID, style.ID, slotIdx, rune.Key, rune.Name,
+					rune.Icon, rune.ShortDesc, rune.LongDesc)
+				if err != nil {
+					return fmt.Errorf("ルーン保存失敗 %s: %v", rune.Key, err)
+				}
+			}
+		}
+	}
+	return nil
+}
+
 func main() {
 	if err := godotenv.Load("../../../.env"); err != nil {
 		log.Fatal(".envが見つかりません")
@@ -354,4 +435,21 @@ func main() {
 		log.Fatalf("アイテム保存失敗: %v", err)
 	}
 	fmt.Println("アイテムデータの保存完了！")
+
+	runes, err := getRunes(version)
+	if err != nil {
+		log.Fatalf("ルーン取得失敗: %v", err)
+	}
+	runeCount := 0
+	for _, s := range runes {
+		for _, slot := range s.Slots {
+			runeCount += len(slot.Runes)
+		}
+	}
+	fmt.Printf("ルーンスタイル数: %d, ルーン数: %d\n", len(runes), runeCount)
+
+	if err = saveRunes(db, runes); err != nil {
+		log.Fatalf("ルーン保存失敗: %v", err)
+	}
+	fmt.Println("ルーンデータの保存完了！")
 }

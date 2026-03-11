@@ -191,7 +191,6 @@
 .headerRow {
     background: #0f0f0f;
     border-bottom: 1px solid rgba(124, 58, 237, 0.4);
-    /* sticky を削除 — tableWrapperがスクロールコンテナになるので機能しない */
     position: static;
     z-index: 10;
 }

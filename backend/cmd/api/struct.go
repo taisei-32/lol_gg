@@ -29,3 +29,25 @@ type Item struct {
 	Tags        pq.StringArray  `json:"tags"`
 	Stats       json.RawMessage `json:"stats"`
 }
+
+type RuneResponse struct {
+	ID        int    `json:"id"`
+	Key       string `json:"key"`
+	Name      string `json:"name"`
+	Icon      string `json:"icon"`
+	ShortDesc string `json:"short_desc"`
+	LongDesc  string `json:"long_desc"`
+}
+
+type RuneSlotResponse struct {
+	Slot  int            `json:"slot"`
+	Runes []RuneResponse `json:"runes"`
+}
+
+type RuneStyleResponse struct {
+	ID    int                `json:"id"`
+	Key   string             `json:"key"`
+	Name  string             `json:"name"`
+	Icon  string             `json:"icon"`
+	Slots []RuneSlotResponse `json:"slots"`
+}

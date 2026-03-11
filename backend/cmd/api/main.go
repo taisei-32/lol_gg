@@ -111,6 +111,81 @@ func getItems(c *gin.Context) {
 	c.JSON(http.StatusOK, items)
 }
 
+func getRunes(c *gin.Context) {
+	styleRows, err := db.Query(`
+		SELECT id, key, name, icon
+		FROM rune_styles
+		ORDER BY id
+	`)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	defer styleRows.Close()
+
+	styleIndexMap := map[int]int{}
+	var styles []RuneStyleResponse
+	for styleRows.Next() {
+		var s RuneStyleResponse
+		err = styleRows.Scan(&s.ID, &s.Key, &s.Name, &s.Icon)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		}
+		styleIndexMap[s.ID] = len(styles)
+		styles = append(styles, s)
+	}
+	runeRows, err := db.Query(`
+		SELECT id, style_id, slot, key, name, icon, short_desc, long_desc
+		FROM runes
+		ORDER BY style_id, slot, id
+	`)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+	defer runeRows.Close()
+	slotIndexMap := map[int]map[int]int{}
+
+	for runeRows.Next() {
+		var r RuneResponse
+		var styleID, slotNum int
+		if err := runeRows.Scan(
+			&r.ID, &styleID, &slotNum,
+			&r.Key, &r.Name, &r.Icon,
+			&r.ShortDesc, &r.LongDesc,
+		); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		styleIdx, ok := styleIndexMap[styleID]
+		if !ok {
+			continue
+		}
+		if slotIndexMap[styleID] == nil {
+			slotIndexMap[styleID] = map[int]int{}
+		}
+
+		if _, exists := slotIndexMap[styleID][slotNum]; !exists {
+			slotIndexMap[styleID][slotNum] = len(styles[styleIdx].Slots)
+			styles[styleIdx].Slots = append(styles[styleIdx].Slots, RuneSlotResponse{
+				Slot:  slotNum,
+				Runes: []RuneResponse{},
+			})
+		}
+
+		slotIdx := slotIndexMap[styleID][slotNum]
+		styles[styleIdx].Slots[slotIdx].Runes = append(
+			styles[styleIdx].Slots[slotIdx].Runes, r,
+		)
+	}
+
+	if styles == nil {
+		styles = []RuneStyleResponse{}
+	}
+
+	c.JSON(http.StatusOK, styles)
+}
+
 func main() {
 	if err := godotenv.Load("../../../.env"); err != nil {
 		log.Fatal(".envが見つかりません")
@@ -146,5 +221,6 @@ func main() {
 	r.GET("/api/version", getVersion)
 	r.GET("/api/champions", getChampions)
 	r.GET("/api/items", getItems)
+	r.GET("/api/runes", getRunes)
 	r.Run(":8081")
 }

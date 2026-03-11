@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import styles from "./page.module.css";
+import Nav from "@/components/Nav";
 
 export default function Home() {
   const [query, setQuery] = useState("");
@@ -20,15 +21,7 @@ export default function Home() {
 
   return (
     <div className={styles.page}>
-      <nav className={styles.nav}>
-        <Link href="/" className={styles.navLogo}>
-          LOL
-        </Link>
-        <div className={styles.navLinks}>
-          <Link href="/champions-id" className={styles.navLink}>チャンピオン</Link>
-          <Link href="/items-id" className={styles.navLink}>アイテム</Link>
-        </div>
-      </nav>
+      <Nav />
 
       <main className={styles.hero}>
         <h1 className={styles.title}>League of Legends </h1>

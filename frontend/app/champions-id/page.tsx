@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import styles from "./page.module.css";
+import Nav from "@/components/Nav";
 
 type Champion = {
     key: number;
@@ -86,21 +87,11 @@ export default function ChampionsPage() {
 
     return (
         <div className={styles.page}>
-            {/* ── NAV ── */}
-            <nav className={styles.nav}>
-                <Link href="/" className={styles.navLogo}>LOL</Link>
-                <div className={styles.navLinks}>
-                    <Link href="/champions" className={styles.navLink}>チャンピオン</Link>
-                    <Link href="/items" className={styles.navLink}>アイテム</Link>
-                </div>
-                <input
-                    className={styles.search}
-                    type="text"
-                    placeholder="チャンピオン名・IDで検索..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                />
-            </nav>
+            <Nav
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                searchPlaceholder="チャンピオン名・IDで検索..."
+            />
 
             <div className={styles.container}>
                 <div className={styles.header}>

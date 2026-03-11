@@ -1,0 +1,598 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Rajdhani:wght@300;400;500;600&display=swap');
+
+.page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: #080808;
+    font-family: 'Rajdhani', sans-serif;
+    color: #e0e0e0;
+    overflow-x: auto;
+}
+
+.container {
+    flex: 1;
+    padding: 40px 48px 80px;
+    position: relative;
+    background:
+        radial-gradient(ellipse 60% 40% at 50% 0%, rgba(124, 58, 237, 0.08) 0%, transparent 60%),
+        #080808;
+}
+
+.container::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(124, 58, 237, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(124, 58, 237, 0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 50% at 50% 0%, black, transparent);
+    pointer-events: none;
+}
+
+.pageHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+    gap: 16px;
+    position: relative;
+    z-index: 1;
+}
+
+.title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(24px, 4vw, 40px);
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: 0.1em;
+    margin: 0;
+    text-shadow: 0 0 40px rgba(124, 58, 237, 0.4);
+}
+
+.titleAccent {
+    color: #a78bfa;
+    text-shadow: 0 0 30px rgba(124, 58, 237, 0.7);
+}
+
+.tabs {
+    display: flex;
+    gap: 4px;
+    background: #0f0f0f;
+    border: 1px solid rgba(124, 58, 237, 0.25);
+    border-radius: 4px;
+    padding: 4px;
+}
+
+.tab {
+    padding: 8px 28px;
+    border-radius: 3px;
+    border: none;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.3);
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.tab:hover {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.tabActive {
+    background: rgba(124, 58, 237, 0.15);
+    color: #a78bfa;
+    box-shadow: 0 0 8px rgba(124, 58, 237, 0.2);
+}
+
+.loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 100px 0;
+    color: rgba(255, 255, 255, 0.25);
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+}
+
+.spinner {
+    width: 36px;
+    height: 36px;
+    border: 2px solid rgba(124, 58, 237, 0.2);
+    border-top-color: #7c3aed;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.layout {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 24px;
+    align-items: start;
+    position: relative;
+    z-index: 1;
+}
+
+.styleTabs {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    position: sticky;
+    top: 90px;
+}
+
+.styleTab {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: #0f0f0f;
+    border: 1px solid rgba(124, 58, 237, 0.15);
+    border-radius: 4px;
+    color: rgba(255, 255, 255, 0.4);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+}
+
+.styleTab:hover {
+    background: rgba(124, 58, 237, 0.06);
+    border-color: rgba(124, 58, 237, 0.4);
+    color: #e0e0e0;
+}
+
+.styleTabActive {
+    background: rgba(124, 58, 237, 0.1) !important;
+    border-color: rgba(167, 139, 250, 0.6) !important;
+    color: #a78bfa !important;
+}
+
+.styleIcon {
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.slotsArea {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.styleHeader {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(124, 58, 237, 0.2);
+}
+
+.styleHeaderIcon {
+    border-radius: 50%;
+}
+
+.styleName {
+    font-family: 'Cinzel', serif;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #a78bfa;
+    margin: 0;
+}
+
+.slotRow {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.slotLabel {
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(167, 139, 250, 0.5);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+}
+
+.runeList {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.keystoneList {
+    gap: 20px;
+}
+
+.runeBtn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 4px;
+    transition: background 0.15s;
+    max-width: 80px;
+}
+
+.runeBtn:hover {
+    background: rgba(124, 58, 237, 0.08);
+}
+
+.keystoneBtn {
+    max-width: 100px;
+}
+
+.runeIcon {
+    border-radius: 50%;
+}
+
+.runeName {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.35);
+    text-align: center;
+    line-height: 1.3;
+    word-break: keep-all;
+    letter-spacing: 0.02em;
+}
+
+.outerLayout {
+    display: grid;
+    grid-template-columns: 1fr 1fr 210px;
+    gap: 20px;
+    align-items: start;
+    position: relative;
+    z-index: 1;
+}
+
+.panel {
+    background: #0f0f0f;
+    border: 1px solid rgba(124, 58, 237, 0.25);
+    border-radius: 4px;
+    padding: 20px;
+}
+
+.panelLabel {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(167, 139, 250, 0.8);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+}
+
+.rightCol {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.styleRow {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.styleCircle {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(124, 58, 237, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    padding: 4px;
+}
+
+.styleCircle:hover {
+    border-color: rgba(124, 58, 237, 0.6);
+    background: rgba(124, 58, 237, 0.08);
+}
+
+.styleCircleActive {
+    border-color: rgba(167, 139, 250, 0.8) !important;
+    background: rgba(124, 58, 237, 0.15) !important;
+    box-shadow: 0 0 8px rgba(124, 58, 237, 0.3);
+}
+
+.styleCircleDisabled {
+    opacity: 0.2;
+    cursor: not-allowed;
+}
+
+.slotSection {
+    margin-bottom: 16px;
+}
+
+.runeRow {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.runeCircle {
+    border-radius: 50%;
+    border: 1px solid transparent;
+    background: rgba(255, 255, 255, 0.03);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    padding: 3px;
+}
+
+.runeCircle:hover {
+    border-color: rgba(124, 58, 237, 0.6);
+    background: rgba(124, 58, 237, 0.08);
+}
+
+.keystoneCircle {
+    padding: 4px;
+}
+
+.runeSelected {
+    border-color: rgba(167, 139, 250, 0.8) !important;
+    background: rgba(124, 58, 237, 0.15) !important;
+    box-shadow: 0 0 10px rgba(124, 58, 237, 0.3);
+}
+
+.runeUnselected {
+    opacity: 0.35;
+    filter: grayscale(60%);
+}
+
+.runeUnselected:hover {
+    opacity: 1;
+    filter: none;
+}
+
+.statSection {
+    margin-bottom: 10px;
+}
+
+.statRowLabel {
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(167, 139, 250, 0.5);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+
+.statRow {
+    display: flex;
+    gap: 10px;
+}
+
+.statCircle {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(124, 58, 237, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    padding: 4px;
+}
+
+.statCircle:hover {
+    border-color: rgba(124, 58, 237, 0.6);
+}
+
+.statSelected {
+    border-color: rgba(167, 139, 250, 0.8) !important;
+    background: rgba(124, 58, 237, 0.15) !important;
+    box-shadow: 0 0 8px rgba(124, 58, 237, 0.3);
+}
+
+.statUnselected {
+    opacity: 0.35;
+    filter: grayscale(55%);
+}
+
+.statUnselected:hover {
+    opacity: 1;
+    filter: none;
+}
+
+.summary {
+    background: #0f0f0f;
+    border: 1px solid rgba(124, 58, 237, 0.25);
+    border-radius: 4px;
+    padding: 20px;
+    position: sticky;
+    top: 90px;
+}
+
+.summaryIcons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+}
+
+.summaryItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: #a78bfa;
+    text-align: center;
+    letter-spacing: 0.03em;
+}
+
+.summaryKeystone {
+    border-radius: 50%;
+    border: 1px solid rgba(167, 139, 250, 0.6);
+    box-shadow: 0 0 12px rgba(124, 58, 237, 0.3);
+}
+
+.summaryEmpty {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.15);
+    text-align: center;
+    padding: 8px 0;
+    letter-spacing: 0.05em;
+}
+
+.summaryRow {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.summarySmall {
+    border-radius: 50%;
+    overflow: hidden;
+    border: 1px solid rgba(124, 58, 237, 0.3);
+}
+
+.summarySmallEmpty {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px dashed rgba(124, 58, 237, 0.15);
+}
+
+.summaryDivider {
+    width: 60%;
+    height: 1px;
+    background: rgba(124, 58, 237, 0.15);
+}
+
+.modalOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    padding: 24px;
+}
+
+.modal {
+    background: #0f0f0f;
+    border: 1px solid rgba(124, 58, 237, 0.4);
+    border-radius: 4px;
+    padding: 32px;
+    max-width: 500px;
+    width: 100%;
+    position: relative;
+    box-shadow: 0 8px 48px rgba(0, 0, 0, 0.6);
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.modalClose {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.25);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 3px;
+    transition: color 0.15s;
+}
+
+.modalClose:hover {
+    color: #a78bfa;
+}
+
+.modalHeader {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.modalIcon {
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.modalName {
+    font-family: 'Cinzel', serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #a78bfa;
+    margin: 0 0 4px;
+}
+
+.modalKey {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 3px;
+    padding: 2px 7px;
+    letter-spacing: 0.05em;
+    display: inline-block;
+    margin: 0;
+}
+
+.modalShortDesc {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #e0e0e0;
+    line-height: 1.6;
+    margin-bottom: 16px;
+    white-space: pre-line;
+    letter-spacing: 0.02em;
+}
+
+.modalDivider {
+    height: 1px;
+    background: rgba(124, 58, 237, 0.2);
+    margin-bottom: 16px;
+}
+
+.modalLongDesc {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.4);
+    line-height: 1.7;
+    white-space: pre-line;
+    letter-spacing: 0.02em;
+}
